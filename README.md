@@ -10,5 +10,5 @@ This repository contains the code for the following paper:
 
 
 ## Updates
-The code is currently undergoing internal scrutiny and is being cleaned up. Please stay tuned for further updates
+The code is currently undergoing internal scrutiny and is being cleaned up. Please stay tuned for further updates!
 
