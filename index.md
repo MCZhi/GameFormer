@@ -16,7 +16,7 @@ The proposed framework draws inspiration from the hierarchical game-theoretic mo
 ## Interaction Prediction
 Given agents' tracks for the past 1 second on a corresponding map, predict the joint future positions of 2 interacting agents for 8 seconds into the future.
 
-<img src="./src/interaction_prediction.png">
+<img src="./src/interaction_prediction.png" style="width:90%;">
 
 ## Closed-loop planning testing
 
