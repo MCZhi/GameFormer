@@ -25,7 +25,7 @@ The planner outputs a planned trajectory at each time step, which is used to sim
 
 | <video muted controls width=380> <source src="./src/2ef8b857eb575693.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/28dd7530f690a80c.mp4"  type="video/mp4"> </video> |
 
-| <video muted controls width=380> <source src="./src/cf966e6cb27802a3.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/4b7a175072d54d11.mp4"  type="video/mp4"> </video> |
+| <video muted controls width=380> <source src="./src/93a82dbe9425898c.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/b66100c3bccb68fa.mp4"  type="video/mp4"> </video> |
 
 
 ## Citation
