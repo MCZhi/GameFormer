@@ -11,7 +11,7 @@ Autonomous vehicles operating in complex real-world environments require accurat
 ## Method Overview
 The proposed framework consists of two parts. First, we build up a holistic neural network to embed the history states of agents and scene context into high-dimensional spaces, encode the interactions between agents and the scene context using Transformer modules, and finally decode different future predicted trajectories and their probabilities. Second, we employ a differentiable optimizer as a motion planner to explicitly plan a future trajectory for the AV according to the most-likely prediction result and initial motion plan. Since the motion planner is differentiable, the gradient from the planner can be backpropagated to the prediction module and the cost function weights can also be learned with the objective to imitate human driving trajectories.
 
-<img src="./src/method overview.png" style="width:90%;">
+<img src="./src/method overview.png">
 
 ## Closed-loop testing
 
