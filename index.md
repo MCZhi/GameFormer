@@ -1,6 +1,6 @@
-# Differentiable Integrated Motion Prediction and Planning with Learnable Cost Function for Autonomous Driving
+# GameFormer
 
-[Zhiyu Huang](https://mczhi.github.io/), [Haochen Liu](https://scholar.google.com/citations?user=iizqKUsAAAAJ&hl=en), [Jingda Wu](https://wujingda.github.io/), [Chen Lv](https://scholar.google.com/citations?user=UKVs2CEAAAAJ&hl=en) 
+[Zhiyu Huang](https://mczhi.github.io/), [Haochen Liu](https://scholar.google.com/citations?user=iizqKUsAAAAJ&hl=en), [Chen Lv](https://scholar.google.com/citations?user=UKVs2CEAAAAJ&hl=en) 
 
 [AutoMan Research Lab, Nanyang Technological University](https://lvchen.wixsite.com/automan)
 
