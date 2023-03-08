@@ -13,33 +13,19 @@ The proposed framework consists of two parts. First, we build up a holistic neur
 
 <img src="./src/method overview.png">
 
-## Closed-loop testing
+## Interaction Prediction
 
-### Cruising
+
+## Closed-loop testing
 
 | <video muted controls width=380> <source src="./src/473df4d0702d0d61.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/ebf548112b4155bd.mp4"  type="video/mp4"> </video> |
 
-### Traffic light
-
 | <video muted controls width=380> <source src="./src/cf4c93a51f255da.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/5af7263eeae8cc38.mp4"  type="video/mp4"> </video> |
-
-### Turning
 
 | <video muted controls width=380> <source src="./src/cf966e6cb27802a3.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/4b7a175072d54d11.mp4"  type="video/mp4"> </video> |
 
-### Emergency
+| <video muted controls width=380> <source src="./src/cf966e6cb27802a3.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/4b7a175072d54d11.mp4"  type="video/mp4"> </video> |
 
-| <video muted controls width=380> <source src="./src/3d43fef395cc20fd.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/8ea14bd2d120c0e4.mp4"  type="video/mp4"> </video> |
-
-### Interaction
-
-| <video muted controls width=380> <source src="./src/60a9ff3762d159d9.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/a7ec124caa56fbda.mp4"  type="video/mp4"> </video> |
-
-| <video muted controls width=380> <source src="./src/73993339ce528fd0.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/f135a85bfd8b8190.mp4"  type="video/mp4"> </video> |
-
-| <video muted controls width=380> <source src="./src/a1f64ce4c1a9f9f8.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/9ba3d538754e86bf.mp4"  type="video/mp4"> </video> |
-
-| <video muted controls width=380> <source src="./src/124ae6902ef59cea.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/84b40c7a7d2fb9b0.mp4"  type="video/mp4"> </video> |
 
 ## Citation
 ```
