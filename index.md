@@ -15,6 +15,7 @@ The proposed framework draws inspiration from the hierarchical game-theoretic mo
 
 ## Interaction Prediction
 
+<img src="./src/interaction_prediction.png">
 
 ## Closed-loop planning testing
 
