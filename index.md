@@ -30,11 +30,11 @@ The planner outputs a planned trajectory at each time step, which is used to sim
 
 ## Citation
 ```
-@article{huang2022differentiable,
-  title={Differentiable Integrated Motion Prediction and Planning with Learnable Cost Function for Autonomous Driving},
-  author={Huang, Zhiyu and Liu, Haochen and Wu, Jingda and Lv, Chen},
-  journal={arXiv preprint arXiv:2207.10422},
-  year={2022}
+@article{huang2023gameformer,
+  title={GameFormer: Game-theoretic Modeling and Learning of Transformer-based Interactive Prediction and Planning for Autonomous Driving},
+  author={Huang, Zhiyu and Liu, Haochen and Lv, Chen},
+  journal={arXiv preprint arXiv:2303.10422},
+  year={2023}
 }
 ```
 
