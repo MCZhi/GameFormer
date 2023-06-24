@@ -11,7 +11,7 @@ The proposed framework draws inspiration from hierarchical game-theoretic modeli
 
 <img src="./src/method overview.png">
 
-## Interaction Prediction
+## Interaction Prediction (Waymo)
 Given the tracks of agents for the past 1 second on a corresponding map, the objective is to predict the joint future positions of 2 interacting agents for 8 seconds into the future.
 
 <img src="./src/interaction_prediction.png" style="width:90%;">
@@ -26,7 +26,7 @@ The planner outputs a planned trajectory at each time step, which is used to sim
 | <video muted controls width=380> <source src="./src/93a82dbe9425898c.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/b66100c3bccb68fa.mp4"  type="video/mp4"> </video> |
 
 ## Closed-loop Planning (nuPlan)
-Refer to the [GameFormer Planner](https://opendrivelab.com/e2ead/AD23Challenge/Track_4_AID.pdf) for the details of the planning framework. The following scenarios demonstrate challenging situations in the nuPlan simulator where the agents are non-reactive.
+Please refer to the [GameFormer Planner](https://opendrivelab.com/e2ead/AD23Challenge/Track_4_AID.pdf) report for the details of the planning framework. The following scenarios demonstrate the performance of closed-loop planning with non-reactive agents in selected challenging situations from the nuPlan dataset.
 
 | <video muted controls width=380> <source src="./src/5bcb4673b6c09a82.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/37a22aeabedd4d1e.mp4"  type="video/mp4"> </video> |
 
