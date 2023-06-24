@@ -28,9 +28,9 @@ The planner outputs a planned trajectory at each time step, which is used to sim
 ## Closed-loop Planning (nuPlan)
 Please refer to the [GameFormer Planner](https://opendrivelab.com/e2ead/AD23Challenge/Track_4_AID.pdf) report for the details of the planning framework. The following scenarios demonstrate the performance of closed-loop planning with non-reactive agents in selected challenging situations from the nuPlan dataset.
 
-| <video muted controls width=380> <source src="./src/5bcb4673b6c09a82.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/37a22aeabedd4d1e.mp4"  type="video/mp4"> </video> |
+| <video muted controls width=380> <source src="./src/Pickup.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/Near_multiple_vehicles.mp4"  type="video/mp4"> </video> |
 
-| <video muted controls width=380> <source src="./src/2ef8b857eb575693.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/28dd7530f690a80c.mp4"  type="video/mp4"> </video> |
+| <video muted controls width=380> <source src="./src/Right_turn.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/Changing_lane.mp4"  type="video/mp4"> </video> |
 
 | <video muted controls width=380> <source src="./src/93a82dbe9425898c.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/b66100c3bccb68fa.mp4"  type="video/mp4"> </video> |
 
