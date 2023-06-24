@@ -32,7 +32,7 @@ Please refer to the [GameFormer Planner](https://opendrivelab.com/e2ead/AD23Chal
 
 | <video muted controls width=380> <source src="./src/Right_turn.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/Changing_lane.mp4"  type="video/mp4"> </video> |
 
-| <video muted controls width=380> <source src="./src/93a82dbe9425898c.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/b66100c3bccb68fa.mp4"  type="video/mp4"> </video> |
+| <video muted controls width=380> <source src="./src/Waiting_for_pedestrain.mp4"  type="video/mp4"> </video> | <video muted controls width=380> <source src="./src/Low_speed.mp4"  type="video/mp4"> </video> |
 
 ## Citation
 ```
