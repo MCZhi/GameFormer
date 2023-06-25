@@ -8,15 +8,18 @@ This repository contains the code for the following paper:
 <br> **[[arXiv]](https://arxiv.org/abs/2303.05760)** &nbsp;**[[Project Website]](https://mczhi.github.io/GameFormer/)**
 
 ## Overview
-What you can expect in this repository 🤟:
-* Code for interaction prediction (joint model) on WOMD
-* Code for open-loop planning on selected scenarios on WOMD
-* For the closed-loop planning on the nuPlan dataset, please go to [GameFormer Planner](https://github.com/MCZhi/GameFormer-Planner)
+In this repository, you can expect to find the following features:
 
-What you might not find in this repository 😵:
-* Code for interaction prediction (marginal model with EM ensemble)
-* Code for closed-loop planning on WOMD, please refer to our previous work [DIPP](https://github.com/MCZhi/DIPP)
+Included 🤟:
+* Code for interaction prediction using a joint model on WOMD
+* Code for open-loop planning on selected scenarios on WOMD
+
+Not included 😵:
+* Code for the marginal model with EM ensemble for interaction prediction on WOMD
+* Code for closed-loop planning on WOMD. For that, please refer to our previous work [DIPP](https://github.com/MCZhi/DIPP)
 * Code to pack and submit the prediction results to the WOMD Interaction Prediction Challenge
+
+For experimentation on the nuPlan dataset, please visit the [GameFormer Planner](https://github.com/MCZhi/GameFormer-Planner) repository, which provides a more comprehensive planning framework.
 
 ## Dataset and Environment
 
