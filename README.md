@@ -18,6 +18,10 @@ What you might not find in this repository 😵:
 * Code for closed-loop planning on WOMD, please refer to our previous work [DIPP](https://github.com/MCZhi/DIPP)
 * Code to pack and submit the prediction results to the WOMD Interaction Prediction Challenge
 
+## Dataset and Environment
+
+## Usage
+
 ## Citation
 If you found this repo useful to your research, please consider citing
 
