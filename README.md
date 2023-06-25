@@ -22,8 +22,16 @@ Not included 😵:
 For experimentation on the nuPlan dataset, please visit the [GameFormer Planner](https://github.com/MCZhi/GameFormer-Planner) repository, which provides a more comprehensive planning framework.
 
 ## Dataset and Environment
+### Download
+
+### Create Conda Env
 
 ## Usage
+### Data Process
+
+### Training
+
+### Testing
 
 ## Citation
 If you found this repo useful to your research, please consider citing
