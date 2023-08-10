@@ -16,8 +16,8 @@ class OpenLoopTestProcessor(DataProcess):
         self.num_neighbors = 10
         self.hist_len = 11
         self.future_len = 50
-        self.n_lanes = 4
-        self.n_crosswalks = 2
+        self.n_lanes = 6
+        self.n_crosswalks = 4
         self.n_refline_waypoints = 1000
 
     def process_frame(self, timestep, sdc_id, tracks):      
@@ -81,6 +81,7 @@ def open_loop_test():
     prediction_ADE, prediction_FDE = [], []
 
     # load model
+    # make sure the model parameters are the same as the ones used in training
     gameformer = GameFormer(modalities=6, neighbors_to_predict=10, future_len=50).to(args.device)
     gameformer.load_state_dict(torch.load(args.model_path, map_location=args.device))
     gameformer.eval()
@@ -155,7 +156,7 @@ def open_loop_test():
                 similarity_1s.append(np.mean(similarity))
                 similarity_3s.append(similarity[29])
                 similarity_5s.append(similarity[49])
-                logging.info(f"Plan Similarity@1s: {similarity[9]}, Similarity@3s: {similarity[29]}, Similarity@5s: {similarity[49]}")
+                logging.info(f"Ego Plan Similarity@1s: {similarity[9]}, Similarity@3s: {similarity[29]}, Similarity@5s: {similarity[49]}")
 
                 prediction_error = check_agent_prediction(predictions, neighbors_future)
                 prediction_ADE.append(prediction_error[0])
@@ -168,7 +169,7 @@ def open_loop_test():
                     trajectories = transform_to_global_frame(curr_t, trajectories.cpu().numpy(), 
                                                              processor.current_xyh, neighbor_ids, parsed_data.tracks)
                     plot_scenario(curr_t, sdc_id, neighbor_ids, processor.map, processor.current_xyh, 
-                                  parsed_data.tracks, trajectories, scores, args.name, scenario_id, args.save)
+                                  parsed_data.tracks, trajectories, args.name, scenario_id, args.save)
             
     # save results
     df = pd.DataFrame(data={'scenarios': scenario_ids, 'collision': collisions, 'miss': miss_rates, 
@@ -182,9 +183,9 @@ if __name__=='__main__':
     parser.add_argument('--name', type=str, help='log name (default: "Test1")', default="Test1")
     parser.add_argument('--test_set', type=str, help='path to testing datasets')
     parser.add_argument('--model_path', type=str, help='path to saved model')
-    parser.add_argument('--render', action="store_true", help='if render the scenario (default: False)', default=False)
-    parser.add_argument('--save', action="store_true", help='if save the rendered images (default: False)', default=False)
-    parser.add_argument('--device', type=str, help='run on which device (default: cpu)', default='cpu')
+    parser.add_argument('--render', action="store_true", help='if render the scenario', default=False)
+    parser.add_argument('--save', action="store_true", help='if save the rendered images', default=False)
+    parser.add_argument('--device', type=str, help='run on which device', default='cuda')
     args = parser.parse_args()
 
     open_loop_test()
