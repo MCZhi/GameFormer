@@ -72,13 +72,13 @@ def interaction_loss(trajectories, last_trajectories, neighbors_valid):
 
     neighbors_to_ego = torch.stack(neighbors_to_ego, dim=-1)
     PF_to_ego = 1.0 / (neighbors_to_ego + 1)
-    PF_to_ego = PF_to_ego * (neighbors_to_ego < 3)
+    PF_to_ego = PF_to_ego * (neighbors_to_ego < 3) # safety threshold
     PF_to_ego = PF_to_ego.sum(-1).sum(-1).mean()
         
     neighbors_to_neighbors = torch.stack(neighbors_to_neighbors, dim=-1)
     PF_to_neighbors = 1.0 / (neighbors_to_neighbors + 1)
-    PF_to_neighbors = PF_to_neighbors * (neighbors_to_neighbors < 3)
-    PF_to_neighbors = PF_to_neighbors.sum(-1).mean(-1).mean()
+    PF_to_neighbors = PF_to_neighbors * (neighbors_to_neighbors < 3) # safety threshold
+    PF_to_neighbors = PF_to_neighbors.sum(-1).mean(-1).mean() 
 
     return PF_to_ego + PF_to_neighbors
 
@@ -103,7 +103,8 @@ def imitation_loss(gmm, scores, ground_truth):
     std_y = torch.exp(log_std_y)
 
     gmm_loss = log_std_x + log_std_y + 0.5 * (torch.square(dx/std_x) + torch.square(dy/std_y))
-    loss = torch.mean(gmm_loss) + torch.mean(gmm_loss[:, :, -1]) + torch.mean(gmm_loss[:, 0])
+    loss = torch.mean(gmm_loss) + torch.mean(gmm_loss[:, 0])
+
     best_mode = best_mode.unsqueeze(1).expand(-1, N)
     score_loss = F.cross_entropy(scores.permute(0, 2, 1), best_mode, label_smoothing=0.2)
     loss += score_loss
@@ -165,7 +166,7 @@ def inverse_dynamic_model(trajs):
     dt = 0.1
     dp = torch.diff(trajs, dim=-2)
     v = torch.norm(dp, dim=-1) / dt
-    theta = torch.atan2(dp[..., 1], dp[..., 0].clamp(min=1e-6))
+    theta = torch.atan2(dp[..., 1], dp[..., 0].clamp(min=1e-3))
     d_v = torch.diff(v)
     a = d_v / dt
     d_theta = torch.diff(theta)
