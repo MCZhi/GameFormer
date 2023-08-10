@@ -54,7 +54,6 @@ Navigate to the open_loop_planning directory:
 ```
 cd open_loop_planning
 ```
-
 ### 1. Data Process
 Preprocess data for model training using the following command:
 ```
