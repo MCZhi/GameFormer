@@ -87,7 +87,7 @@ def trajectory_smoothing(trajectory):
     return np.column_stack([x, y])
 
 
-def plot_scenario(timestep, sdc_id, predict_ids, map_features, ego_pose, agents, trajectories, scores, name, scenario_id, save=False):
+def plot_scenario(timestep, sdc_id, predict_ids, map_features, ego_pose, agents, trajectories, name, scenario_id, save=False):
     plt.ion()
     fig = plt.gcf()
     dpi = 100
@@ -98,7 +98,6 @@ def plot_scenario(timestep, sdc_id, predict_ids, map_features, ego_pose, agents,
 
     _plot_map_features(map_features)
     _plot_traffic_signals(map_features['dynamic_map_states'][timestep])
-    #_plot_multi_modal_trajectories(trajectories, scores, predict_ids, agents, timestep)
     _plot_trajectories(trajectories)
     _plot_agents(agents, timestep, sdc_id, predict_ids)
 
@@ -110,7 +109,7 @@ def plot_scenario(timestep, sdc_id, predict_ids, map_features, ego_pose, agents,
     plt.gca().axis([-60 + ego_pose[0], 60 + ego_pose[0], -60 + ego_pose[1], 60 + ego_pose[1]])
 
     if save:
-        save_path = f"./testing_log/{name}/open_loop_test"
+        save_path = f"./testing_log/{name}/visualizations"
         os.makedirs(save_path, exist_ok=True)
         plt.savefig(f'{save_path}/{scenario_id}_{timestep}.svg')
     else:
