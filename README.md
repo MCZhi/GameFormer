@@ -76,7 +76,7 @@ python train.py \
 
 Specify the paths for ```--train_set``` and ```--valid_set```. You can set the ```--levels``` to determine the number of interaction levels. Adjust other parameters like ```--seed```, ```--train_epochs```, ```--batch_size```, and ```--learning_rate``` as needed for training.
 
-The training log and models will be saved in ```training_log/{name'}```.
+The training log and models will be saved in ```training_log/{name}```.
 
 ### 3. Testing
 For testing, run:
@@ -88,7 +88,7 @@ python open_loop_test.py \
 
 Specify ```--test_set``` as the path to the ```scenario/validation``` data, and ```--model_path``` as the path to your trained model. Use ```--render``` to visualize planning and prediction results.
 
-The testing result will be saved in ```testing_log/{name'}```.
+The testing result will be saved in ```testing_log/{name}```.
 
 ## Citation
 If you find this repository useful for your research, please consider giving us a star &#127775; and citing our paper.
