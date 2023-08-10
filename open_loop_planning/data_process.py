@@ -26,8 +26,8 @@ class DataProcess(object):
         self.num_neighbors = 10
         self.hist_len = 11
         self.future_len = 50
-        self.n_lanes = 4
-        self.n_crosswalks = 2
+        self.n_lanes = 6
+        self.n_crosswalks = 4
         self.n_refline_waypoints = 1000
         self.data_files = files
 
