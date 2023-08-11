@@ -24,7 +24,6 @@ For those interested in the nuPlan dataset experimentation, we invite you to vis
 ## Dataset and Environment
 ### 1. Download
 - Download the [Waymo Open Motion Dataset](https://waymo.com/open/download/) v1.1. Utilize data from ```scenario/training_20s``` or ```scenario/training``` for training, and data from ```scenario/validation``` and ```scenario/validation_interactive``` for testing.
-
 - Clone this repository and navigate to the directory:
 ```
 git clone https://github.com/MCZhi/GameFormer.git && cd GameFormer
@@ -35,12 +34,10 @@ git clone https://github.com/MCZhi/GameFormer.git && cd GameFormer
 ```
 conda create -n gameformer python=3.8
 ```
-
 - Activate the conda environment:
 ```
 conda activate gameformer
 ```
-
 - Install the required packages:
 ```
 pip install -r requirements.txt
@@ -63,12 +60,12 @@ python data_process.py \
 
 Specify ```--load_path``` to the location of the downloaded set path, ```--save_path``` to the desired processed data path, and enable ```--use_multiprocessing``` for parallel data processing. You can perform this separately for the ```training``` and ```validation_interactive``` sets.
 
-### 2. Training & Evaluations
+### 2. Training & Evaluation
 Train the model using the command:
 ```
 bash train.sh 4 #number of GPUs
 ```
-NOTED: Before training, specify the processed paths for ```--train_set``` and ```--valid_set``` inside the script file. 
+**NOTE**: Before training, specify the processed paths for ```--train_set``` and ```--valid_set``` inside the script file. 
 Set ```--name``` to save logs and checkpoints. As referred in ```train.py```, you can also adjust other arguments like ```--seed```, ```--train_epochs```, ```--batch_size``` for customed training.
 
 ## Open-loop Planning 
