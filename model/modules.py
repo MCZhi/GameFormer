@@ -15,7 +15,7 @@ class PositionalEncoding(nn.Module):
         pe[:, 0, 0::2] = torch.sin(position * div_term)
         pe[:, 0, 1::2] = torch.cos(position * div_term)
         pe = pe.permute(1, 0, 2)
-        self.register_buffer('pe', pe)
+        self.register_parameter('pe', nn.Parameter(pe, requires_grad=False))
         self.dropout = nn.Dropout(p=dropout)
 
     def forward(self, x):
