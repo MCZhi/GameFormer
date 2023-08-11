@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 import time
 from model.GameFormer import GameFormer
-from utils.inter_pred_train_utils import *
+from utils.inter_pred_utils import *
 
 
 # define model training epoch

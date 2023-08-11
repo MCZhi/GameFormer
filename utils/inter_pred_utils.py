@@ -1,10 +1,9 @@
 import os
-import glob
 import torch
 import logging
-import numpy as np
+import glob
 import tensorflow as tf
-
+import numpy as np
 from torch.utils.data import Dataset
 from torch.nn import functional as F
 from google.protobuf import text_format
@@ -14,6 +13,7 @@ from waymo_open_dataset.metrics.python import config_util_py as config_util
 from waymo_open_dataset.protos import motion_metrics_pb2
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import random
 
 
 def initLogging(log_file: str, level: str = "INFO"):
@@ -23,6 +23,12 @@ def initLogging(log_file: str, level: str = "INFO"):
                         datefmt='%m-%d %H:%M:%S')
     logging.getLogger().addHandler(logging.StreamHandler())
 
+def set_seed(CUR_SEED):
+    random.seed(CUR_SEED)
+    np.random.seed(CUR_SEED)
+    torch.manual_seed(CUR_SEED)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 class DrivingData(Dataset):
     def __init__(self, data_dir):
@@ -34,7 +40,7 @@ class DrivingData(Dataset):
     def __getitem__(self, idx):
         data = np.load(self.data_list[idx])
         ego = data['ego'][0]
-        neighbor = np.concatenate([data['ego'][1][np.newaxis, ...], data['neighbors']], axis=0)[:21, :, :]
+        neighbor = np.concatenate([data['ego'][1][np.newaxis,...], data['neighbors']], axis=0)
 
         map_lanes = data['map_lanes'][:, :, :200:2]
         map_crosswalks = data['map_crosswalks'][:, :, :100:2]
@@ -45,79 +51,78 @@ class DrivingData(Dataset):
         return ego, neighbor, map_lanes, map_crosswalks, ego_future_states, neighbor_future_states, object_type
 
 
-class DrivingTestData(Dataset):
-    def __init__(self, data_dir):
-        self.data_list = glob.glob(data_dir)
-
-    def __len__(self):
-        return len(self.data_list)
-
-    def __getitem__(self, idx):
-        data = np.load(self.data_list[idx], allow_pickle=True)
-        scenario_id = self.data_list[idx].split('/')[-1].split('_')[0]
-
-        ego = data['ego']
-        neighbor = data['neighbors']
-        map_lanes = data['map_lanes'][:, :, :200:2]
-        map_crosswalks = data['map_crosswalks'][:, :, :100:2]
-
-        object_type = data['object_type']
-        current_state = data['current_state']
-        object_index = data['object_index']
-
-        return ego, neighbor, map_lanes, map_crosswalks, object_type, current_state, object_index, scenario_id
-
-
-def gmm_loss(trajectories, convs, log_probs, ground_truth):
+def imitation_loss(trajectories, ground_truth,gmm=True):
     metric_time = [29, 49, 79]
+    ade_distance = torch.norm(trajectories[:, :, :, 4::5,:2] - ground_truth[:, :, None, 4::5, :2], dim=-1)
+    fde_distance = torch.norm(trajectories[:, :, :, metric_time,:2] - ground_truth[:, :, None, metric_time, :2], dim=-1)
+    distance = fde_distance.sum(-1) + ade_distance.mean(-1)
+    best_mode = torch.argmin(distance.mean(1), dim=-1)
+    B, N = trajectories.shape[0], trajectories.shape[1]
+    best_mode_future = trajectories[torch.arange(B)[:, None, None], torch.arange(N)[None, :, None], best_mode[:, None, None]]
+    best_mode_future = best_mode_future.squeeze(2)
+    de = F.smooth_l1_loss(best_mode_future, ground_truth[:, :, :, :2],reduction='none').sum(-1)
+    ade = torch.mean(de[:,:,4::5],dim=-1)
+    fde = torch.sum(de[:,:,metric_time],dim=-1)
+    loss = fde + ade
+    loss = torch.mean(loss.mean(1))
+    return loss, best_mode, best_mode_future
+
+def gmm_loss(trajectories, convs, probs, ground_truth):
+    metric = [29, 49, 79]
     distance = torch.norm(trajectories[:, :, :, : ,:2] - ground_truth[:, :, None, :, :2], dim=-1)
-    ndistance = distance.mean(-1) + distance[..., metric_time].sum(-1) 
+    ndistance = distance.mean(-1) + distance[...,metric].sum(-1) 
     best_mode = torch.argmin(ndistance.mean(1), dim=-1)
     B, N = trajectories.shape[0], trajectories.shape[1]
     
-    #[B, N, T, 2]
-    best_mode_future = trajectories[torch.arange(B)[:, None, None], torch.arange(N)[None, :, None], 
-                                    best_mode[:, None, None]].squeeze(2)
-    #[B, N, T, 2]
+    #[b,n,t,2]
+    best_mode_future = trajectories[torch.arange(B)[:, None, None], torch.arange(N)[None, :, None], best_mode[:, None, None]].squeeze(2)
+    #[b,n,t,3]
     convs = convs[torch.arange(B)[:, None, None], torch.arange(N)[None, :, None], best_mode[:, None, None]].squeeze(2)
 
     dx = best_mode_future[...,0] - ground_truth[...,0]
     dy = best_mode_future[...,1] - ground_truth[...,1]
 
-    log_std_x = torch.clamp(convs[..., 0], -2, 2)
-    log_std_y = torch.clamp(convs[..., 1], -2, 2)
+    log_std_x = torch.clip(convs[...,0], 0, 5)
+    log_std_y = torch.clip(convs[...,1], 0, 5)
+
     std_x, std_y = torch.exp(log_std_x), torch.exp(log_std_y)
 
-    reg_gmm_log_coefficient = log_std_x + log_std_y
-    reg_gmm_exp = 0.5 * ((dx ** 2) / (std_x ** 2) + (dy ** 2) / (std_y ** 2))
+    reg_gmm_log_coefficient = log_std_x + log_std_y  # (batch_size, num_timestamps)
+    reg_gmm_exp = 0.5  * ((dx**2) / (std_x**2) + (dy**2) / (std_y**2))
     loss = reg_gmm_log_coefficient + reg_gmm_exp
-    loss = loss.mean(-1) + loss[..., metric_time].sum(-1)
+    loss = loss.mean(-1) + loss[..., metric].sum(-1)
 
-    prob_loss = F.cross_entropy(log_probs, best_mode, label_smoothing=0.2)
-    loss = loss + prob_loss
+    prob_loss = F.cross_entropy(input=probs, target=best_mode, label_smoothing=0.2)
+    loss = loss + 2*prob_loss
     loss = loss.mean()
 
     return loss, best_mode, best_mode_future, convs
 
-
-def level_k_loss(outputs, ego_future, neighbor_future):
+def level_k_loss(outputs, ego_future, neighbor_future, levels, gmm=True):
     loss: torch.tensor = 0
-    levels = len(outputs.keys()) // 2
     neighbor_future_valid = torch.ne(neighbor_future[..., :2].sum(-1), 0)
     ego_future_valid = torch.ne(ego_future[..., :2].sum(-1), 0)
-
-    for k in range(levels):
+    sc_cnt = 0
+    
+    for k in range(levels+1):
         trajectories = outputs[f'level_{k}_interactions'][..., :2]
         scores = outputs[f'level_{k}_scores']
         ego = trajectories[:, 0] * ego_future_valid.unsqueeze(1).unsqueeze(-1)
         neighbor = trajectories[:, 1] * neighbor_future_valid.unsqueeze(1).unsqueeze(-1)
         trajectories = torch.stack([ego, neighbor], dim=1)
+        
         gt_future = torch.stack([ego_future, neighbor_future], dim=1)
-        convs = outputs[f'level_{k}_interactions'][..., 2:]
-        gmmloss, best_mode, future, _ = gmm_loss(trajectories, convs, scores.sum(1), gt_future)
-        loss += gmmloss
+        if gmm:
+            convs = outputs[f'level_{k}_interactions'][..., 2:]
+            gloss, best_mode, future, _ = gmm_loss(trajectories, convs, scores.sum(1), gt_future)
+            loss += gloss
+        else:
+            il_loss, best_mode, future = imitation_loss(trajectories, gt_future)
+            sc_loss = F.cross_entropy(scores.sum(1), best_mode)
+            loss += 0.5*il_loss + 2*sc_loss
 
-    return loss, (future, best_mode, scores)
+    return loss, (future,best_mode,scores)
+
 
 
 def motion_metrics(trajectories, ego_future, neighbor_future):
@@ -168,7 +173,6 @@ def default_metrics_config():
     text_format.Parse(config_text, config)
 
     return config
-
 
 class MotionMetrics:
     """Wrapper for motion metrics computation."""

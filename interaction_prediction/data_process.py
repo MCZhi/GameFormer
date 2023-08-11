@@ -11,7 +11,7 @@ from tqdm import tqdm
 from shapely.geometry import LineString, Point, Polygon
 from shapely.affinity import affine_transform, rotate
 from waymo_open_dataset.protos import scenario_pb2
-from utils.inter_pred_data_utils import *
+from utils.data_utils import *
 import os
 import pickle
 
