@@ -46,8 +46,30 @@ conda activate gameformer
 pip install -r requirements.txt
 ```
 
-## TODO: Interaction Prediction
+## Interaction Prediction
+Navigate to the interaction_prediction directory:
+```
+cd interaction_prediction
+```
+### 1. Data Process
+Preprocess data for model training using the following command:
+```
+python data_process.py \
+--load_path path/to/your/dataset/scenario/set_path \
+--save_path path/to/your/processed_data/set_path \
+--use_multiprocessing \
+--processes=8
+```
 
+Specify ```--load_path``` to the location of the downloaded set path, ```--save_path``` to the desired processed data path, and enable ```--use_multiprocessing``` for parallel data processing. You can perform this separately for the ```training``` and ```validation_interactive``` sets.
+
+### 2. Training & Evaluations
+Train the model using the command:
+```
+bash train.sh 4 #number of GPUs
+```
+NOTED: Before training, specify the processed paths for ```--train_set``` and ```--valid_set``` inside the script file. 
+Set ```--name``` to save logs and checkpoints. As referred in ```train.py```, you can also adjust other arguments like ```--seed```, ```--train_epochs```, ```--batch_size``` for customed training.
 
 ## Open-loop Planning 
 Navigate to the open_loop_planning directory:
@@ -60,7 +82,7 @@ Preprocess data for model training using the following command:
 python data_process.py \
 --load_path path/to/your/dataset/training_20s \
 --save_path path/to/your/processed_data \
---use_multiprocessing
+--use_multiprocessing \
 ```
 
 Set ```--load_path``` to the location of the downloaded dataset, ```--save_path``` to the desired processed data path, and enable ```--use_multiprocessing``` for parallel data processing. You can perform this separately for the training and validation sets.
