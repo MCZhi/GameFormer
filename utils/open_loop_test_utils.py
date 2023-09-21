@@ -138,26 +138,6 @@ def _plot_agents(tracks, timestep, sdc_id, predict_ids):
                                   transform=mpl.transforms.Affine2D().rotate_around(*(pos_x, pos_y), state.heading) + plt.gca().transData)
             plt.gca().add_patch(rect)
 
-def _plot_multi_modal_trajectories(trajectories, scores, predict_ids, agents, timestep):
-    current_state = agents['ego'][timestep/10].ego_vehicle_state.position[:2]
-    multi_modal_trajs = trajectories[0]
-    modals = np.argsort(scores[0])
-    z = np.linspace(8, 0, 51)
-    a = np.linspace(0.05, 0.5, len(modals))
-
-    for i, j in enumerate(modals):
-        traj = np.insert(multi_modal_trajs[j], 0, current_state, axis=0)
-        plt.scatter(traj[:, 0], traj[:, 1], c=z, cmap='winter', alpha=a[i], zorder=2)
-
-    for i, j in enumerate(predict_ids):
-        current_state = agents[j][timestep/10].ego_vehicle_state.position[:2]
-        multi_modal_trajs = trajectories[i+1]
-        modals = np.argsort(scores[i+1])
-
-        for m, k in enumerate(modals):
-            traj = np.insert(multi_modal_trajs[k], 0, current_state, axis=0)
-            plt.scatter(traj[:, 0], traj[:, 1], c=z, cmap='winter', alpha=a[m], zorder=2)
-
 
 def _plot_trajectories(trajectories):
     traj = trajectories[0]
