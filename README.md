@@ -112,10 +112,12 @@ The testing result will be saved in ```testing_log/{name}```.
 If you find this repository useful for your research, please consider giving us a star &#127775; and citing our paper.
 
 ```angular2html
-@article{huang2023gameformer,
-  title={GameFormer: Game-theoretic Modeling and Learning of Transformer-based Interactive Prediction and Planning for Autonomous Driving},
-  author={Huang, Zhiyu and Liu, Haochen and Lv, Chen},
-  journal={arXiv preprint arXiv:2303.05760},
-  year={2023}
+@InProceedings{Huang_2023_ICCV,
+    author    = {Huang, Zhiyu and Liu, Haochen and Lv, Chen},
+    title     = {GameFormer: Game-theoretic Modeling and Learning of Transformer-based Interactive Prediction and Planning for Autonomous Driving},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2023},
+    pages     = {3903-3913}
 }
 ```
