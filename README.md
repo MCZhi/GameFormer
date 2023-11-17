@@ -49,6 +49,7 @@ Navigate to the interaction_prediction directory:
 cd interaction_prediction
 ```
 ### 1. Data Process
+**NOTE**: there might be some missing annoation issues in using ```training_20s``` as train set, so please download ```scenario/training``` instead.
 Preprocess data for model training using the following command:
 ```
 python data_process.py \
