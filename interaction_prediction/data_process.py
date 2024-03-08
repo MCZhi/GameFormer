@@ -230,16 +230,12 @@ class DataProcess(object):
         return vectorized_map.astype(np.float32), vectorized_crosswalks.astype(np.float32)
 
     def ego_process(self, sdc_ids, tracks):
-        ego_states = np.zeros(shape=(2, self.hist_len, 11))
+        ego_states = np.zeros(shape=(2, self.hist_len, 9))
         self.current_xyzh = []
         for s,sdc_id in enumerate(sdc_ids):
             sdc_states = tracks[sdc_id].states[:self.hist_len]
             ego_type = tracks[sdc_id].object_type
             self.ego_type = ego_type
-            if ego_type<=0 or ego_type>3:
-                one_hot_type = [0,0,0]
-            else:
-                one_hot_type = np.eye(3)[int(ego_type)-1]
 
             # get the sdc current state
             self.current_xyzh.append( (tracks[sdc_id].states[self.hist_len-1].center_x, tracks[sdc_id].states[self.hist_len-1].center_y, 
@@ -250,13 +246,13 @@ class DataProcess(object):
                 if sdc_state.valid:
                     ego_state = np.array([sdc_state.center_x, sdc_state.center_y, sdc_state.heading, sdc_state.velocity_x, 
                                         sdc_state.velocity_y, sdc_state.length, sdc_state.width, sdc_state.height, 
-                                        one_hot_type[0],one_hot_type[1],one_hot_type[2]])
+                                        ego_type])
                     ego_states[s,i] = ego_state
 
         return ego_states.astype(np.float32)
 
     def neighbors_process(self, sdc_ids, tracks):
-        neighbors_states = np.zeros(shape=(self.num_neighbors, self.hist_len, 11))
+        neighbors_states = np.zeros(shape=(self.num_neighbors, self.hist_len, 9))
         neighbors = []
         self.neighbors_id = []
         self.neighbors_type = []
@@ -284,17 +280,16 @@ class DataProcess(object):
             neighbor_states = tracks[neighbor_id].states[:self.hist_len]
             neighbor_type = tracks[neighbor_id].object_type
             self.neighbors_type.append(neighbor_type)
-            if neighbor_type<=0 or neighbor_type>3:
-                one_hot_type = [0,0,0]
-            else:
-                one_hot_type = np.eye(3)[int(neighbor_type)-1]
+            if neighbor_type <= 0 or neighbor_type > 3:
+                neighbor_type = 0
+                
             self.neighbors_id.append(neighbor_id)
-
+            
             for i, neighbor_state in enumerate(neighbor_states):
                 if neighbor_state.valid: 
                     neighbors_states[added_num, i] = np.array([neighbor_state.center_x, neighbor_state.center_y, neighbor_state.heading,  neighbor_state.velocity_x, 
                                                                neighbor_state.velocity_y, neighbor_state.length, neighbor_state.width, neighbor_state.height, 
-                                                               one_hot_type[0],one_hot_type[1],one_hot_type[2]])
+                                                               neighbor_type])
             added_num += 1
 
             # only consider 'num_neihgbors' agents
