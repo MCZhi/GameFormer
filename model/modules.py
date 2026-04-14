@@ -31,9 +31,11 @@ class AgentEncoder(nn.Module):
         self.type_emb = nn.Embedding(4, 256, padding_idx=0)
 
     def forward(self, inputs):
+        ## First 8 features as trajectory, last feature as type
         traj, _ = self.motion(inputs[:, :, :8])
         output = traj[:, -1]
         type = self.type_emb(inputs[:, -1, 8].int())
+        ## additive injection
         output = output + type
 
         return output
@@ -230,3 +232,61 @@ class InteractionDecoder(nn.Module):
         trajectories[..., :2] += current_states[:, id, None, None, :2]
 
         return query_content, trajectories, scores
+    
+    
+class LiDAREncoder1(nn.Module):
+    def __init__(self):
+        super(LiDAREncoder1, self).__init__()
+        self.conv1 = nn.Conv3d(12, 64, kernel_size=3, stride=2, padding=1)
+        self.conv2 = nn.Conv3d(64, 128, kernel_size=3, stride=2, padding=1)
+        self.conv3 = nn.Conv3d(128, 256, kernel_size=3, stride=2, padding=0)
+        
+        self.fnn_block = nn.Linear(256, 256)
+
+    def forward(self, inputs):
+        x = nn.ReLU()(nn.MaxPool3d(kernel_size=(1,2,2))(self.conv1(inputs)))
+        x = nn.ReLU()(nn.MaxPool3d(kernel_size=(1,2,2))(self.conv2(x)))
+        x = nn.ReLU()(nn.MaxPool3d(kernel_size=(1,2,2))(self.conv3(x)))
+        x = x.flatten(2).transpose(1, 2)
+        x = self.fnn_block(x)
+        return x
+
+class LiDAREncoder2(nn.Module):
+    def __init__(self):
+        super(LiDAREncoder2, self).__init__()
+        self.conv1 = nn.Conv3d(12, 64, kernel_size=3, stride=(2, 4, 4), padding=1)   
+        self.conv2 = nn.Conv3d(64, 128, kernel_size=3, stride=(2, 4, 4), padding=1)  
+        self.conv3 = nn.Conv3d(128, 256, kernel_size=3, stride=(3, 4, 4), padding=0)
+        
+        self.fnn_block = nn.Linear(256, 256)
+
+    def forward(self, inputs):
+        x = nn.ReLU()(self.conv1(inputs))
+        x = nn.ReLU()(self.conv2(x))
+        x = nn.ReLU()(self.conv3(x))
+        x = x.flatten(2).transpose(1, 2)
+        x = self.fnn_block(x)
+        return x
+    
+class LiDAREncoder3(nn.Module):
+    def __init__(self):
+        super(LiDAREncoder3, self).__init__()
+        self.cnn = nn.Sequential(
+            nn.Conv2d(12, 32, 3, stride=2, padding=1), nn.ReLU(),
+            nn.Conv2d(32, 64, 3, stride=2, padding=1), nn.ReLU(),
+            nn.AdaptiveAvgPool2d(1)
+        )
+        self.proj = nn.Linear(64, 256)
+
+    def forward(self, inputs):
+        feat = self.cnn(inputs).flatten(1)
+        return self.proj(feat)
+    
+class LiDAREncoder4(nn.Module):
+    """Will try out an LSTM later"""
+    def __init__(self):
+        super(LiDAREncoder4, self).__init__()
+        pass
+
+    def forward(self, inputs):
+        pass

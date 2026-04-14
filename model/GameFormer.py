@@ -11,11 +11,13 @@ class Encoder(nn.Module):
         self.ego_encoder = AgentEncoder()
         self.lane_encoder = LaneEncoder()
         self.crosswalk_encoder = CrosswalkEncoder()
+        self.lidar_encoder = LiDAREncoder1()
         attention_layer = nn.TransformerEncoderLayer(d_model=dim, nhead=heads, dim_feedforward=dim*4,
                                                      activation=F.gelu, dropout=dropout, batch_first=True)
         self.fusion_encoder = nn.TransformerEncoder(attention_layer, layers, enable_nested_tensor=False)
 
     def segment_map(self, map, map_encoding):
+        """groups the 300 pts into chunks of 10 and takes the max within each chunk"""
         stride = 10
         B, N_e, N_p, D = map_encoding.shape
 
@@ -37,6 +39,7 @@ class Encoder(nn.Module):
         encoded_ego = self.ego_encoder(ego)
         encoded_neighbors = [self.agent_encoder(neighbors[:, i]) for i in range(neighbors.shape[1])]
         encoded_actors = torch.stack([encoded_ego] + encoded_neighbors, dim=1)
+        ## Sum
         actors_mask = torch.eq(actors[:, :, -1].sum(-1), 0)
 
         # map encoding
@@ -44,6 +47,15 @@ class Encoder(nn.Module):
         map_crosswalks = inputs['map_crosswalks']
         encoded_map_lanes = self.lane_encoder(map_lanes)
         encoded_map_crosswalks = self.crosswalk_encoder(map_crosswalks)
+        
+        # lidar encoding
+        lidar_bev = inputs['lidar_bev']
+        # (B, 16, 256)                    
+        encoded_lidar = self.lidar_encoder(lidar_bev)
+        
+        # lidar mask
+        lidar_mask = (lidar_bev.sum(dim=(1,2,3,4))==0)
+        lidar_mask = lidar_mask.unsqueeze(1).expand(-1, 16)
 
         # attention fusion
         encodings = []
@@ -54,8 +66,8 @@ class Encoder(nn.Module):
         for i in range(N):
             lanes, lanes_mask = self.segment_map(map_lanes[:, i], encoded_map_lanes[:, i])
             crosswalks, crosswalks_mask = self.segment_map(map_crosswalks[:, i], encoded_map_crosswalks[:, i])
-            fusion_input = torch.cat([encoded_actors, lanes, crosswalks], dim=1)
-            mask = torch.cat([actors_mask, lanes_mask, crosswalks_mask], dim=1)
+            fusion_input = torch.cat([encoded_actors, lanes, crosswalks,encoded_lidar], dim=1)
+            mask = torch.cat([actors_mask, lanes_mask, crosswalks_mask, lidar_mask], dim=1)
             masks.append(mask)
             encoding = self.fusion_encoder(fusion_input, src_key_padding_mask=mask)
             encodings.append(encoding)
